@@ -94,17 +94,32 @@ def ProduitScalaire(vec1, vec2):
 
     return sum
 
+def ScoreEuclidien(vec1, vec2):
+    return -float(np.linalg.norm(
+        np.asarray(vec1) - np.asarray(vec2)
+    ))
+
 def Normalize(vec):
     norme = np.sqrt(ProduitScalaire(vec, vec))
     return vec / norme
 
 def Predict(amplitudes):
     scores = {}
-    for letter in letters:
-        vec_connu = vecs[letter]
+    for letter, vec_connu in vecs.items():
         # Le score de similitude entre le vecteur connu de la lettre et le vecteur inconnu est le produit scalaire
         scores[letter] = ProduitScalaire(Normalize(vec_connu), Normalize(amplitudes))
+        # scores[letter] = ScoreEuclidien(amplitudes, vec_connu)
     return scores
+
+def PoidsSoftmax(scores):
+    valeurs = np.asarray(list(scores.values()), dtype=float)
+    if valeurs.size == 0 or not np.isfinite(valeurs).all():
+        raise ValueError("La softmax exige au moins un score et des scores tous finis.")
+
+    # Soustraire le maximum stabilise le calcul des exponentielles.
+    poids = np.exp(valeurs - valeurs.max())
+    poids /= poids.sum()
+    return dict(zip(scores, poids))
 
 def Classify(scores):
     score_max = 0
@@ -133,14 +148,14 @@ for letter in letters:
         amplitudes = amplitudes[0]
 
         scores = Predict(amplitudes)
+        poids = PoidsSoftmax(scores)
 
         print("========================")
         # print(scores)
 
-        prediction = Classify(scores)
+        prediction = Classify(poids)
 
-        # Meilleur score
-        confiance = format(scores[prediction] * 100, ".2f")
+        confiance = format(poids[prediction] * 100, ".2f")
 
         if letter == prediction:
             print("✅")
@@ -149,5 +164,5 @@ for letter in letters:
 
         print(f"Réelle : {letter}")
         print(f"Prédiction : {prediction}")
-        print(f"Confiance : {confiance}%")
+        print(f"Confiance relative (softmax) : {confiance}%")
 

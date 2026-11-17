@@ -84,13 +84,27 @@ s_v = \frac{\mathbf{x} \cdot \mathbf{r}_v}
 {\lVert \mathbf{x} \rVert_2\,\lVert \mathbf{r}_v \rVert_2}.
 $$
 
+La fonction **softmax** transforme les scores cosinus des cinq voyelles
+apprises ($V = \{a,e,i,o,u\}$) en poids relatifs. Le calcul soustrait le score
+maximal avant de prendre les exponentielles.
 
-On choisit ensuite celui avec le plus grand score.
+$$
+m = \max_{u \in V} s_u,
+\qquad
+w_v = \frac{\exp(s_v - m)}{\sum_{u \in V} \exp(s_u - m)}
+$$
+
+Les poids totalisent 1. La voyelle au score maximal a aussi le plus grand
+poids. Le script affiche ce poids multiplié par 100 sous le nom de
+**confiance relative (softmax)**. Avec cinq scores identiques, chaque voyelle
+obtient 20 %.
 
 ```mermaid
 flowchart TD
     A["Signal inconnu"] --> B["Extraire ses caractéristiques spectrales"]
     B --> C["Calculer la similarité cosinus pour chaque voyelle"]
     D["Vecteurs de référence"] --> C
-    C --> E["Retenir la voyelle au score maximal"]
+    C --> E["Appliquer la softmax aux cinq scores"]
+    E --> F["Retenir la voyelle au poids maximal"]
+    F --> G["Afficher son poids en pourcentage"]
 ```
