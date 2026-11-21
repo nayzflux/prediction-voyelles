@@ -7,7 +7,7 @@ import lib
 
 dossier_apprentissage = Path("./data/apprentissage")
 apprentissage = lib.Tri(dossier_apprentissage)
-dossier_test = Path("./data/apprentissage")
+dossier_test = Path("./data/test")
 test = lib.Tri(dossier_test)
 methodes = ("PSN", "PS", "NE", "MSE")
 

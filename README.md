@@ -1,61 +1,41 @@
 # Prédiction de voyelles
 
-> TP 2 SAN - 3ETI - CPE Lyon
+> TP 2 SAN · 3ETI · CPE Lyon
 
-**__Auteur:__** **Tristan GUIEU, Nino BELAOUD**
+**Auteurs** — Tristan GUIEU, Nino BELAOUD
 
-**__Environement Python:__** **MSI CPE**
+Ce projet classe un enregistrement dans l’une des cinq voyelles `a`, `e`, `i`, `o` et `u` à partir de son spectre.
 
-## Principe de fonctionnement
+## Exécution
 
-### Entrainement
+Utiliser l’environnement Python MSI CPE du TP avec NumPy, le module `msicpe.san` et Plotly pour l’affichage des figures. Exécuter les commandes depuis la racine du dépôt.
 
-Le but de l'entrainement est de calculer le vecteur caractérisant chaque lettre.
+| Commande | Comportement |
+| --- | --- |
+| `python predict.py` | Demande le chemin d’un fichier `.npz`, par exemple `data/test/a_6.npz`, puis affiche la voyelle prédite et sa confiance relative. |
+| `python test.py` | Compare, pour chaque fichier de `data/test`, la prédiction à la voyelle indiquée dans le nom du fichier. |
+| `python train.py` | Recalcule les références à partir de `data/apprentissage`, les affiche en console et ouvre une figure Plotly vide par voyelle. |
+| `python test_parameters.py` | Recalcule les références pour chaque réglage et trace le taux de prédictions correctes et la confiance moyenne pour quatre méthodes de score. |
 
-Chaque lettre possède un vecteur est de dimension H+1 composée des amplitudes moyennes du fondamentales et des H premier harmonique des signaux de la lettre contenu dans `data/apprentissage`.
+`predict.py` et `test.py` utilisent directement les références définies dans `lib.py`. Les vecteurs recalculés par `train.py` sont conservés en mémoire pendant son exécution.
 
-$$
-\mathbf{r}_v = (r_{v,1}, \ldots, r_{v,H+1}),
-\qquad
-r_{v,h} = \frac{1}{J_v} \sum_{j=1}^{J_v} A_{v,j,h}
-$$
+## Données
 
-$J_v$ désigne le nombre d’enregistrements de la voyelle $v$ et $A_{v,j,h}$
-la valeur du pic de rang $h$ dans le spectre logarithmique normalisé de
-l’enregistrement $j$. Le rang $h=1$ correspond à la fondamentale.
+Chaque fichier `.npz` contient le signal `s` et le vecteur temps `t`.
 
-Nous obtenons les vecteurs suivants:
+| Dossier | Contenu |
+| --- | --- |
+| `data/apprentissage` | 25 enregistrements étiquetés, soit 5 par voyelle. |
+| `data/test` | 10 enregistrements étiquetés, soit 2 par voyelle. |
+| `data/etude` | 15 signaux d’étude nommés `signal_1.npz` à `signal_15.npz`. |
 
-Chaque colonne reprend un vecteur utilisé dans `test.py`, arrondi à quatre
-décimales. Le numéro de ligne $h$ indique le rang de l’harmonique.
+`train.py` et `test.py` regroupent les fichiers de leur dossier par voyelle, à partir du préfixe devant le premier `_` dans chaque nom.
 
-$$
-\begin{array}{r|rrrrr}
-h & a & e & i & o & u \\
-\hline
-1 & 0{,}9927 & 0{,}9709 & 0{,}9878 & 0{,}9433 & 0{,}9990 \\
-2 & 0{,}9504 & 0{,}9713 & 0{,}9505 & 0{,}9463 & 0{,}9376 \\
-3 & 0{,}7306 & 0{,}8103 & 0{,}6360 & 0{,}8813 & 0{,}6286 \\
-4 & 0{,}8092 & 0{,}9111 & 0{,}3983 & 0{,}6735 & 0{,}4142 \\
-5 & 0{,}7819 & 0{,}6495 & 0{,}2265 & 0{,}4739 & 0{,}3276 \\
-6 & 0{,}8789 & 0{,}5345 & 0{,}2120 & 0{,}4987 & 0{,}2392 \\
-7 & 0{,}8140 & 0{,}5097 & 0{,}1358 & 0{,}3188 & 0{,}1221 \\
-8 & 0{,}7859 & 0{,}4942 & 0{,}0430 & 0{,}1843 & 0{,}0948 \\
-9 & 0{,}7255 & 0{,}4053 & 0{,}0200 & 0{,}1201 & 0{,}1080 \\
-10 & 0{,}6634 & 0{,}4741 & -0{,}0344 & 0{,}0777 & 0{,}1044 \\
-11 & 0{,}7660 & 0{,}4764 & -0{,}0107 & 0{,}0977 & 0{,}2047 \\
-12 & 0{,}5816 & 0{,}3601 & -0{,}0096 & 0{,}0387 & 0{,}3204 \\
-13 & 0{,}4255 & 0{,}2674 & 0{,}0046 & 0{,}0661 & 0{,}2843 \\
-14 & 0{,}3192 & 0{,}2991 & 0{,}0596 & 0{,}0122 & 0{,}2707 \\
-15 & 0{,}2328 & 0{,}2263 & 0{,}1525 & 0{,}0146 & 0{,}2128 \\
-16 & 0{,}1874 & 0{,}2484 & 0{,}1222 & 0{,}0103 & 0{,}1573 \\
-17 & 0{,}1508 & 0{,}2284 & 0{,}0187 & -0{,}0182 & 0{,}0455 \\
-18 & 0{,}1936 & 0{,}2197 & -0{,}0060 & -0{,}0262 & -0{,}0375 \\
-19 & 0{,}1338 & 0{,}2169 & -0{,}0176 & 0{,}0526 & 0{,}0181 \\
-20 & 0{,}1702 & 0{,}2083 & -0{,}0354 & 0{,}1019 & -0{,}0034 \\
-21 & 0{,}2089 & 0{,}2302 & 0{,}0476 & 0{,}0666 & 0{,}0754
-\end{array}
-$$
+## Extraction et apprentissage
+
+La transformée de Fourier donne un spectre dont le module au carré est noté $P$. La fréquence fondamentale $f_1$ est détectée sur $P / \max(P)$ avec un seuil de `0.3` par défaut. Les valeurs des pics sont relevées dans le spectre logarithmique $\log_{10}(P) / \max(\log_{10}(P))$, autour des fréquences $h f_1$ pour $h = 1, \ldots, H+1$.
+
+À l’apprentissage, chaque composante du vecteur de référence d’une voyelle est la moyenne des valeurs relevées au même rang dans ses enregistrements. Avec `H = 14`, le vecteur contient 15 composantes, de la fondamentale aux 14 harmoniques suivantes.
 
 ```mermaid
 flowchart TD
@@ -66,45 +46,66 @@ flowchart TD
     E --> F["Obtenir un vecteur de référence par voyelle"]
 ```
 
-## Prediction
+Chaque colonne reprend un vecteur défini dans [`lib.py`](lib.py), arrondi à quatre décimales. Le rang 1 correspond à la fondamentale.
 
-Le but de la prédiction est de trouver à quel lettre un signal inconnu correspond.
+| Rang | a | e | i | o | u |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0,9927 | 0,9709 | 0,9878 | 0,9231 | 0,9990 |
+| 2 | 0,9504 | 0,9713 | 0,9505 | 0,9827 | 0,9376 |
+| 3 | 0,7306 | 0,8103 | 0,6360 | 0,9700 | 0,6286 |
+| 4 | 0,8092 | 0,9111 | 0,3983 | 0,7906 | 0,4142 |
+| 5 | 0,7819 | 0,6495 | 0,2265 | 0,5776 | 0,3276 |
+| 6 | 0,8789 | 0,5345 | 0,2120 | 0,5939 | 0,2392 |
+| 7 | 0,8140 | 0,5097 | 0,1358 | 0,3628 | 0,1221 |
+| 8 | 0,7859 | 0,4942 | 0,0430 | 0,2288 | 0,0948 |
+| 9 | 0,7255 | 0,4053 | 0,0200 | 0,1441 | 0,1080 |
+| 10 | 0,6634 | 0,4741 | -0,0344 | 0,1015 | 0,1044 |
+| 11 | 0,7660 | 0,4764 | -0,0107 | 0,0777 | 0,2047 |
+| 12 | 0,5816 | 0,3601 | -0,0096 | 0,0426 | 0,3204 |
+| 13 | 0,4255 | 0,2674 | 0,0046 | 0,0348 | 0,2843 |
+| 14 | 0,3192 | 0,2991 | 0,0596 | 0,0184 | 0,2707 |
+| 15 | 0,2328 | 0,2263 | 0,1525 | 0,0166 | 0,2128 |
 
-Pour cela il faut trouver calculer le score de similitude entre le **vecteur du signal inconnu** et chaque **vecteur des lettres connues**.
+## Prédiction
 
-La lettre détecté étant celle avec le score de similitude le plus élevé.
-
-Nous avons choisit de définir le score de similitude par le **produit scalaire** entre le **vecteur inconnu normalisé** et le **vecteur connu normalisé**
-
-Pour le vecteur $\mathbf{x}$ du signal inconnu et le vecteur de référence
-$\mathbf{r}_v$ de la voyelle $v$, le score de similarité cosinus vaut
+Le vecteur du signal inconnu est extrait de la même façon que les vecteurs d’apprentissage. Par défaut, la méthode `NE` calcule la **norme euclidienne** de la différence entre le vecteur inconnu $\mathbf{x}$ et le vecteur de référence $\mathbf{r}_v$ de chaque voyelle. Le score est l’opposé de cette norme, de sorte que la voyelle la plus proche obtient le score le plus élevé.
 
 $$
-s_v = \frac{\mathbf{x} \cdot \mathbf{r}_v}
-{\lVert \mathbf{x} \rVert_2\,\lVert \mathbf{r}_v \rVert_2}.
+s_v = -\lVert \mathbf{x} - \mathbf{r}_v \rVert_2
 $$
 
-La fonction **softmax** transforme les scores cosinus des cinq voyelles
-apprises ($V = \{a,e,i,o,u\}$) en poids relatifs. Le calcul soustrait le score
-maximal avant de prendre les exponentielles.
+La softmax transforme les cinq scores en poids relatifs dont la somme vaut 1. Soustraire le score maximal stabilise le calcul.
 
 $$
 m = \max_{u \in V} s_u,
 \qquad
-w_v = \frac{\exp(s_v - m)}{\sum_{u \in V} \exp(s_u - m)}
+w_v = \frac{\exp(s_v - m)}{\sum_{u \in V} \exp(s_u - m)},
+\qquad V = \{a,e,i,o,u\}
 $$
 
-Les poids totalisent 1. La voyelle au score maximal a aussi le plus grand
-poids. Le script affiche ce poids multiplié par 100 sous le nom de
-**confiance relative (softmax)**. Avec cinq scores identiques, chaque voyelle
-obtient 20 %.
+La voyelle au poids maximal est retenue. Le script affiche ce poids en pourcentage sous le nom **Confiance relative (softmax)**. Avec cinq scores identiques, chaque voyelle obtient 20 %.
 
 ```mermaid
 flowchart TD
-    A["Signal inconnu"] --> B["Extraire ses caractéristiques spectrales"]
-    B --> C["Calculer la similarité cosinus pour chaque voyelle"]
-    D["Vecteurs de référence"] --> C
+    A["Signal inconnu"] --> B["Extraire son vecteur spectral"]
+    B --> C["Calculer les scores à partir des normes euclidiennes"]
+    D["Vecteurs de référence de lib.py"] --> C
     C --> E["Appliquer la softmax aux cinq scores"]
     E --> F["Retenir la voyelle au poids maximal"]
     F --> G["Afficher son poids en pourcentage"]
 ```
+
+## Étude des paramètres
+
+`test_parameters.py` fait varier $H$ de 1 à 20 à seuil fixe $s = 0{,}3$, puis le seuil de 0,1 à 0,9 par pas de 0,1 à $H = 13$. Le script compare quatre scores.
+
+| Méthode | Calcul du score |
+| --- | --- |
+| `NE` (par défaut) | Opposé de la norme euclidienne de la différence des vecteurs. |
+| `PSN` | Produit scalaire des vecteurs normalisés, soit la similarité cosinus. |
+| `PS` | Produit scalaire des vecteurs. |
+| `MSE` | Opposé de l’erreur quadratique moyenne. |
+
+Les courbes intitulées « Précision » montrent le pourcentage de prédictions correctes. La confiance moyenne est la moyenne des poids softmax des voyelles prédites, exprimée en pourcentage.
+
+**Le balayage utilise `data/apprentissage` pour calculer les références et `data/test` pour mesurer les résultats.** Ces courbes décrivent donc les performances sur les enregistrements d’apprentissage. Le script `test.py` utilise les dix enregistrements distincts de `data/test`.
