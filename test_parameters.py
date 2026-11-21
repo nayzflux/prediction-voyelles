@@ -44,7 +44,7 @@ def mesurer(h, s):
 valeurs_h = list(range(1, 21))
 valeurs_s = [i / 10 for i in range(1, 10)]
 resultats_h = [mesurer(h, 0.3) for h in valeurs_h]
-resultats_s = [mesurer(13, s) for s in valeurs_s]
+resultats_s = [mesurer(14, s) for s in valeurs_s]
 
 fig = make_subplots(
     rows=2,
@@ -52,9 +52,9 @@ fig = make_subplots(
     shared_xaxes=True,
     subplot_titles=(
         "Précision selon H (s = 0,3)",
-        "Précision selon s (H = 13)",
+        "Précision selon s (H = 14)",
         "Confiance moyenne selon H (s = 0,3)",
-        "Confiance moyenne selon s (H = 13)",
+        "Confiance moyenne selon s (H = 14)",
     ),
 )
 
