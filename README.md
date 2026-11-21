@@ -109,3 +109,6 @@ flowchart TD
 Les courbes intitulées « Précision » montrent le pourcentage de prédictions correctes. La confiance moyenne est la moyenne des poids softmax des voyelles prédites, exprimée en pourcentage.
 
 **Le balayage utilise `data/apprentissage` pour calculer les références et `data/test` pour mesurer les résultats.** Ces courbes décrivent donc les performances sur les enregistrements d’apprentissage. Le script `test.py` utilise les dix enregistrements distincts de `data/test`.
+
+![alt text](screen1.png)
+![alt text](screen2.png)
