@@ -37,7 +37,7 @@ for letter in letters:
     for fichier in letters[letter]:
         # Charger le signal
         # Extraire frequence fondamentale et listes des amplitudes des harmoniques
-        freq_fondamentales, amplitudes = Signal(fichier, freq_fondamentales, amplitudes, fig, True)
+        freq_fondamentales, amplitudes = Signal(fichier, freq_fondamentales, amplitudes, i, fig, True)
 
         i+=1
 
