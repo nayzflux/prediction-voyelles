@@ -1,6 +1,7 @@
 import numpy as np
-import numpy as np
 import msicpe.san as san
+import plotly.graph_objects as go
+
 from pathlib import Path
 
 # Nombre d'harmonique
@@ -56,7 +57,7 @@ def Tri(pDossier):
 
     return letters
 
-def Signal(pFichier, pFrequencesFondamentales, pAmplitudes, pFig = None, pAffichage = False):
+def Signal(pFichier, pFrequencesFondamentales, pAmplitudes, pI, pFig = None, pAffichage = False):
     s, t = Importation(pFichier)
     frequencesfondamentales = pFrequencesFondamentales
     amplitudes = pAmplitudes
@@ -71,6 +72,17 @@ def Signal(pFichier, pFrequencesFondamentales, pAmplitudes, pFig = None, pAffich
     frequences_pics = Frequences(f1)
 
     amplitudes.append(Amplitude(U, frequences_pics, nu))
+
+    if pAffichage :
+        pFig.add_trace(
+            go.Scatter(x=t, y=s, mode="lines", name=f"Signal {pI}"),
+            row=1, col=1
+        )
+
+        pFig.add_trace(
+            go.Scatter(x=nu, y=U, mode="lines", name=f"Spectre {pI}"),
+            row=2, col=1
+        )
 
     return frequencesfondamentales, amplitudes
 
