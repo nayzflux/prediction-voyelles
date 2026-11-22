@@ -1,8 +1,16 @@
 from lib import Classify, PoidsSoftmax, Predict, Signal
+from plotly.subplots import make_subplots
 
 file_name = input("Entrer le chemin du fichier à analyser : \n")
 
-freq_fondamentales, amplitudes = Signal(file_name, [], [], None, True)
+# Créer deux graphiques
+fig = make_subplots(
+    rows=2,
+    cols=1,
+    subplot_titles=("Signal temporel", "Spectre de Fourier")
+)
+
+freq_fondamentales, amplitudes = Signal(file_name, [], [], fig, True)
 
 freq_fondamentale = freq_fondamentales[0]
 amplitudes = amplitudes[0]
@@ -36,3 +44,18 @@ for a in amplitudes:
 print("-------")
 
 print("========================")
+
+# Titres et axes
+fig.update_layout(
+    title=f"Analyse du signal : {file_name}",
+    height=700
+)
+
+fig.update_xaxes(title_text="Temps (s)", row=1, col=1)
+fig.update_yaxes(title_text="Amplitude", row=1, col=1)
+
+fig.update_xaxes(title_text="Fréquence (Hz)", row=2, col=1)
+fig.update_yaxes(title_text="Amplitude du spectre", row=2, col=1)
+
+# Afficher les graphiques
+fig.show()
