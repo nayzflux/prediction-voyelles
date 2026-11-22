@@ -1,6 +1,10 @@
 from lib import Classify, PoidsSoftmax, Predict, Signal
 from plotly.subplots import make_subplots
 
+import numpy as np
+import msicpe.san as san
+import plotly.graph_objects as go
+
 file_name = input("Entrer le chemin du fichier à analyser : \n")
 
 # Créer deux graphiques
@@ -10,7 +14,9 @@ fig = make_subplots(
     subplot_titles=("Signal temporel", "Spectre de Fourier")
 )
 
-freq_fondamentales, amplitudes = Signal(file_name, [], [], fig, True)
+freq_fondamentales, amplitudes = Signal(
+    file_name, [], [], pI=1, pFig=fig, pAffichage=True
+)
 
 freq_fondamentale = freq_fondamentales[0]
 amplitudes = amplitudes[0]
